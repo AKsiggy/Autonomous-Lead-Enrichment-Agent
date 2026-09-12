@@ -20,7 +20,7 @@ EMAIL_PATTERN = re.compile(
     r"[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"
 )
 
-#weights
+
 IMPORTANT_PATH_KEYWORDS = {
     "about": 10,
     "company": 10,
@@ -34,6 +34,7 @@ IMPORTANT_PATH_KEYWORDS = {
     "careers": 6,
     "press": 5,
     "investors": 5,
+    #can add more if required
 }
 
 
@@ -103,8 +104,7 @@ class WebsiteScraper:
 
                         pages.append(page)
 
-                        # Discover links from the
-                        # rendered Selenium DOM.
+                        # Discover links from the rendered DOM.
                         new_urls = self._discover_links(
                             driver,
                             base_url,
@@ -342,21 +342,15 @@ class WebsiteScraper:
             "html.parser",
         )
 
-        # ==================================================
-        # IMPORTANT:
-        # Extract metadata BEFORE removing footer/nav.
-        #
-        # Postman's LinkedIn URL is in the footer.
-        # ==================================================
+        # extremely extremely extremely IMPORTANT:
+        # Extract data BEFORE removing footer/nav.
 
         raw_text = soup.get_text(
             " ",
             strip=True,
         )
 
-        # --------------------------------------------------
         # Emails
-        # --------------------------------------------------
 
         emails = sorted(
             set(
@@ -366,9 +360,7 @@ class WebsiteScraper:
             )
         )
 
-        # --------------------------------------------------
-        # LinkedIn URLs
-        # --------------------------------------------------
+        # LinkedIn
 
         linkedin_urls = []
 
@@ -409,9 +401,7 @@ class WebsiteScraper:
             set(linkedin_urls)
         )
 
-        # ==================================================
-        # NOW clean the DOM for the LLM.
-        # ==================================================
+        # cleaning data
 
         for element in soup(
             [
@@ -428,9 +418,7 @@ class WebsiteScraper:
         ):
             element.decompose()
 
-        # --------------------------------------------------
         # Title
-        # --------------------------------------------------
 
         title = ""
 
@@ -440,9 +428,7 @@ class WebsiteScraper:
                 strip=True,
             )
 
-        # --------------------------------------------------
         # Main content
-        # --------------------------------------------------
 
         root = (
             soup.find("main")

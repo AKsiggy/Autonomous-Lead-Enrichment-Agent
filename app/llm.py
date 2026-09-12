@@ -24,8 +24,7 @@ class GroqExtractor:
         self.client = Groq(api_key=api_key)
         self.model = model
 
-        # Generate the schema directly from the Pydantic model.
-        # This keeps the LLM prompt synchronized with models.py.
+        #schema
         self.schema = CompanyIntelligence.model_json_schema()
 
         self.system_prompt = f"""
@@ -88,9 +87,7 @@ Pydantic JSON Schema:
             domain,
         )
 
-        # --------------------------------------------------------
         # Call Groq
-        # --------------------------------------------------------
 
         try:
             response = self.client.chat.completions.create(
@@ -126,10 +123,8 @@ Pydantic JSON Schema:
                 f"LLM request failed for {domain}"
             ) from exc
 
-        # --------------------------------------------------------
         # Validate response structure
-        # --------------------------------------------------------
-
+        
         if not response.choices:
             raise ValueError(
                 f"Groq returned no choices for {domain}"
@@ -148,9 +143,7 @@ Pydantic JSON Schema:
             raw,
         )
 
-        # --------------------------------------------------------
         # Parse JSON
-        # --------------------------------------------------------
 
         try:
             data = json.loads(raw)
@@ -166,9 +159,7 @@ Pydantic JSON Schema:
                 f"Groq returned invalid JSON for {domain}"
             ) from exc
 
-        # --------------------------------------------------------
         # Validate against Pydantic schema
-        # --------------------------------------------------------
 
         try:
             result = CompanyIntelligence.model_validate(data)
@@ -186,9 +177,7 @@ Pydantic JSON Schema:
                 f"Invalid LLM response schema for {domain}"
             ) from exc
 
-        # --------------------------------------------------------
         # Token usage
-        # --------------------------------------------------------
 
         if response.usage:
             logger.info(
