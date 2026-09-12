@@ -38,8 +38,13 @@ JSON Output
 pip install -r requirements.txt
 ```
 ### 2. Configure Environment Variables
+```text
+"""Add API Key in .env file""" 
 
-Add API key in .env(Groq)
+GROQ_API_KEY=ADD_API_KEY
+GROQ_MODEL=openai/gpt-oss-120b
+```
+
 
 ### 3. Run
 
